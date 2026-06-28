@@ -1,0 +1,35 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pipeline-role
+
+rules:
+# Allow PipelineRuns
+- apiGroups: ["tekton.dev"]
+  resources:
+    - pipelineruns
+  verbs:
+    - create
+    - get
+    - list
+    - watch
+    - delete
+
+# Allow reading Pipelines
+- apiGroups: ["tekton.dev"]
+  resources:
+    - pipelines
+  verbs:
+    - get
+    - list
+    - watch
+
+# Allow reading Trigger resources
+- apiGroups: ["triggers.tekton.dev"]
+  resources:
+    - triggerbindings
+    - triggertemplates
+  verbs:
+    - get
+    - list
+    - watch

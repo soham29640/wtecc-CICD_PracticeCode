@@ -32,8 +32,11 @@ spec:
         - init      
 
     - name: lint
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
       taskRef:
-        name: echo
+        name: flake8
       params:
       - name: message
         value: "Calling Flake8 linter..."
@@ -41,13 +44,17 @@ spec:
         - clone
 
     - name: tests
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
       taskRef:
-        name: echo
+        name: nose
       params:
-      - name: message
-        value: "Running unit tests with PyUnit..."
+      - name: args
+        value: "-v --with-spec --spec-color"
       runAfter:
         - lint
+
 
     - name: build
       taskRef:

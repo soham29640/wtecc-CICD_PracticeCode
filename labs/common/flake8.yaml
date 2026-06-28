@@ -1,0 +1,44 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: flake8
+spec:
+  workspaces:
+    - name: source
+
+  params:
+    - name: image
+      type: string
+      default: python:3.9-slim
+
+    - name: path
+      type: string
+      default: "."
+
+    - name: requirements_file
+      type: string
+      default: "requirements.txt"
+
+    - name: args
+      type: array
+      default: []
+
+  steps:
+    - name: lint
+      image: $(params.image)
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/bin/bash
+        set -e
+
+        python -m pip install --upgrade pip setuptools wheel
+
+        if [ -f "$(params.requirements_file)" ]; then
+          pip install -r $(params.requirements_file)
+        fi
+
+        pip install flake8
+
+        flake8 "$@" $(params.path)
+      args:
+        - $(params.args)
